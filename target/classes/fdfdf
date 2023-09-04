@@ -1,0 +1,146 @@
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.font.TextAttribute;
+
+public class GUI implements ActionListener {
+    JFrame window, prefWindow;
+    JTextPane textPane;
+    JScrollPane scrollPane;
+    JMenuBar menuBar;
+    JMenu fileMenu, editMenu, formatMenu, styleMenu; // Combine format and style menus
+    JMenuItem newItem, openItem, saveItem, saveAsItem, preferencesItem, exitItem;
+    String appName = "Notepad";
+    Functions file = new Functions(this);
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new GUI());
+    }
+
+    public GUI() {
+        createWindow();
+        createTextPane();
+        createMenuBar();
+        createFileMenu();
+        createStyleMenu(); // Create a style menu
+        window.setVisible(true);
+    }
+
+    public void createWindow() {
+        window = new JFrame("New Document - " + appName);
+        window.setSize(600, 800);
+        window.setLocationRelativeTo(null);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void createPrefWindow() {
+        // ... (remaining code remains the same)
+    }
+
+    public void createTextPane() {
+        textPane = new JTextPane();
+        scrollPane = new JScrollPane(textPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        window.add(scrollPane);
+    }
+
+    public void createMenuBar() {
+        menuBar = new JMenuBar();
+        window.setJMenuBar(menuBar);
+
+        fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+
+        styleMenu = new JMenu("Style"); // Style menu
+        menuBar.add(styleMenu); // Add the style menu to the menu bar
+    }
+
+    public void createFileMenu() {
+        newItem = new JMenuItem("New");
+        newItem.addActionListener(this);
+        newItem.setActionCommand("new");
+        fileMenu.add(newItem);
+
+        openItem = new JMenuItem("Open");
+        openItem.addActionListener(this);
+        openItem.setActionCommand("open");
+        fileMenu.add(openItem);
+
+        saveItem = new JMenuItem("Save");
+        saveItem.addActionListener(this);
+        saveItem.setActionCommand("save");
+        fileMenu.add(saveItem);
+
+        saveAsItem = new JMenuItem("Save As");
+        saveAsItem.addActionListener(this);
+        saveAsItem.setActionCommand("save as");
+        fileMenu.add(saveAsItem);
+
+        preferencesItem = new JMenuItem("Preferences");
+        preferencesItem.addActionListener(this);
+        preferencesItem.setActionCommand("pref");
+        fileMenu.add(preferencesItem);
+
+        exitItem = new JMenuItem("Exit");
+        exitItem.addActionListener(this);
+        exitItem.setActionCommand("exit");
+        fileMenu.add(exitItem);
+    }
+
+    public void createStyleMenu() {
+        boldItem = new JMenuItem("Bold");
+        boldItem.addActionListener(this);
+        boldItem.setActionCommand("bold");
+        styleMenu.add(boldItem);
+
+        JMenuItem italicItem = new JMenuItem("Italic");
+        italicItem.addActionListener(this);
+        italicItem.setActionCommand("italic");
+        styleMenu.add(italicItem);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        switch (command) {
+            case "new":
+                file.newFile();
+                break;
+            case "open":
+                file.openFile();
+                break;
+            case "save":
+                file.save();
+                break;
+            case "save as":
+                file.saveAs();
+                break;
+            case "exit":
+                file.exit();
+                break;
+            case "pref":
+                createPrefWindow();
+                break;
+            case "bold":
+                applyStyleToSelectedText(TextAttribute.WEIGHT_BOLD);
+                break;
+            case "italic":
+                applyStyleToSelectedText(TextAttribute.POSTURE_OBLIQUE);
+                break;
+        }
+    }
+
+    private void applyStyleToSelectedText(Object style) {
+        int start = textPane.getSelectionStart();
+        int end = textPane.getSelectionEnd();
+        if (start != end) {
+            StyledDocument doc = textPane.getStyledDocument();
+            MutableAttributeSet attr = new SimpleAttributeSet();
+            StyleConstants.setBold(attr, style == TextAttribute.WEIGHT_BOLD);
+            StyleConstants.setItalic(attr, style == TextAttribute.POSTURE_OBLIQUE);
+            doc.setCharacterAttributes(start, end - start, attr, false);
+        }
+    }
+}
