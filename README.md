@@ -1,6 +1,8 @@
 # Notepad Application
 
 A simple Notepad application written in Java using Swing for creating, opening, editing, and saving text documents.
+
+
 ![Captura de Ecrã (4)](https://github.com/Mardssss/SimpleNotepad/assets/136364324/f0129504-d22f-43c8-b28d-965fc2f5c09a)
 
 
